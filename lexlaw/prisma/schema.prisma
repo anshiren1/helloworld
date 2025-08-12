@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum CaseStatus {
+  OPEN
+  ON_HOLD
+  CLOSED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  VOID
+}
+
+enum InvoiceItemType {
+  TIME
+  EXPENSE
+  ADJUSTMENT
+}
+
+enum PaymentMethod {
+  CASH
+  CHECK
+  CARD
+  TRANSFER
+  OTHER
+}
+
+model Client {
+  id           Int        @id @default(autoincrement())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  firstName    String
+  lastName     String
+  email        String?    @unique
+  phone        String?
+  address      String?
+  notes        String?
+  active       Boolean    @default(true)
+
+  cases        Case[]
+  invoices     Invoice[]
+  payments     Payment[]
+}
+
+model Case {
+  id          Int         @id @default(autoincrement())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  client      Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId    Int
+  title       String
+  description String?
+  status      CaseStatus  @default(OPEN)
+  openedAt    DateTime    @default(now())
+  closedAt    DateTime?
+
+  timeEntries TimeEntry[]
+}
+
+model TimeEntry {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  case        Case      @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  caseId      Int
+  workDate    DateTime
+  hours       Float
+  rate        Float
+  description String?
+  billable    Boolean   @default(true)
+  invoice     Invoice?  @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  invoiceId   Int?
+}
+
+model Invoice {
+  id          Int            @id @default(autoincrement())
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  client      Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId    Int
+  issueDate   DateTime       @default(now())
+  dueDate     DateTime?
+  status      InvoiceStatus  @default(DRAFT)
+  notes       String?
+
+  items       InvoiceItem[]
+  timeEntries TimeEntry[]
+  payments    Payment[]
+}
+
+model InvoiceItem {
+  id          Int             @id @default(autoincrement())
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  invoice     Invoice         @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId   Int
+  type        InvoiceItemType @default(TIME)
+  description String
+  quantity    Float           @default(1)
+  unitPrice   Float           @default(0)
+  amount      Float           @default(0)
+}
+
+model Payment {
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  client      Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId    Int
+  invoice     Invoice?      @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  invoiceId   Int?
+  date        DateTime
+  amount      Float
+  method      PaymentMethod @default(OTHER)
+  reference   String?
+  notes       String?
+}
