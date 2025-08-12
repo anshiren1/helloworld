@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h3>{{ object.title }}</h3>
+<p>Client: <a href="/clients/{{ object.client.id }}/">{{ object.client.full_name }}</a></p>
+<p>Status: {{ object.get_status_display }} | Rate: ${{ object.hourly_rate }}</p>
+<p>Total time fees: ${{ object.total_time_fees }} | Expenses: ${{ object.total_expenses }} | <strong>Total due: ${{ object.total_due }}</strong></p>
+<h4>Time entries</h4>
+<p><a role="button" href="/time/new/">Add time</a></p>
+<ul>
+  {% for t in object.time_entries.all %}
+    <li>{{ t.date }} — {{ t.hours }}h @ ${{ t.rate|default:object.hourly_rate }} — {{ t.description }}</li>
+  {% empty %}
+    <li>No time entries.</li>
+  {% endfor %}
+</ul>
+<h4>Expenses</h4>
+<p><a role="button" href="/expenses/new/">Add expense</a></p>
+<ul>
+  {% for e in object.expenses.all %}
+    <li>{{ e.date }} — ${{ e.amount }} — {{ e.description }}</li>
+  {% empty %}
+    <li>No expenses.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

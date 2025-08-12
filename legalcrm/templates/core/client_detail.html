@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h3>{{ object.full_name }}</h3>
+<p>{{ object.email }} — {{ object.phone }}</p>
+<p>{{ object.address }}</p>
+<p>{{ object.notes }}</p>
+<h4>Cases</h4>
+<ul>
+  {% for case in object.cases.all %}
+    <li><a href="/cases/{{ case.id }}/">{{ case.title }}</a> — {{ case.get_status_display }}</li>
+  {% empty %}
+    <li>No cases yet.</li>
+  {% endfor %}
+</ul>
+<p><a role="button" href="/cases/new/">New case</a></p>
+{% endblock %}

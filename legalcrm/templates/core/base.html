@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal CRM</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
+  <style>
+    header { margin-bottom: 1rem; }
+    .totals { display:flex; gap:1rem; }
+    .totals article { flex:1; text-align:center; }
+    nav a { margin-right: .5rem; }
+  </style>
+</head>
+<body>
+  <header class="container">
+    <h2><a href="/">Legal CRM</a></h2>
+    <nav>
+      <a href="/clients/">Clients</a>
+      <a href="/cases/">Cases</a>
+      <a href="/admin/">Admin</a>
+    </nav>
+    <hr />
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
