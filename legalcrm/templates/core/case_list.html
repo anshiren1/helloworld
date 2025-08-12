@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h3>Cases</h3>
+<p><a role="button" href="/cases/new/">New case</a></p>
+<table>
+  <thead>
+    <tr><th>Title</th><th>Client</th><th>Status</th><th>Rate</th></tr>
+  </thead>
+  <tbody>
+    {% for case in object_list %}
+    <tr>
+      <td><a href="/cases/{{ case.id }}/">{{ case.title }}</a></td>
+      <td>{{ case.client.full_name }}</td>
+      <td>{{ case.get_status_display }}</td>
+      <td>${{ case.hourly_rate }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">No cases yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

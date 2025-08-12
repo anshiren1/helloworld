@@ -1,0 +1,44 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h3>Dashboard</h3>
+<section class="totals">
+  <article>
+    <h5>Clients</h5>
+    <strong>{{ client_count }}</strong>
+  </article>
+  <article>
+    <h5>Cases</h5>
+    <strong>{{ case_count }}</strong>
+  </article>
+</section>
+<section>
+  <h4>Open cases</h4>
+  <ul>
+    {% for c in open_cases %}
+      <li><a href="/cases/{{ c.id }}/">{{ c.title }}</a> — {{ c.client.full_name }}</li>
+    {% empty %}
+      <li>No open cases yet.</li>
+    {% endfor %}
+  </ul>
+</section>
+<section>
+  <h4>Recent time entries</h4>
+  <ul>
+    {% for t in recent_time_entries %}
+      <li>{{ t.date }} — {{ t.hours }}h — <a href="/cases/{{ t.case.id }}/">{{ t.case.title }}</a></li>
+    {% empty %}
+      <li>No time entries yet.</li>
+    {% endfor %}
+  </ul>
+</section>
+<section>
+  <h4>Recent expenses</h4>
+  <ul>
+    {% for e in recent_expenses %}
+      <li>{{ e.date }} — ${{ e.amount }} — <a href="/cases/{{ e.case.id }}/">{{ e.case.title }}</a></li>
+    {% empty %}
+      <li>No expenses yet.</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

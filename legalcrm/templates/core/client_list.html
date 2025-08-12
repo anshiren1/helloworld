@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h3>Clients</h3>
+<p><a role="button" href="/clients/new/">New client</a></p>
+<table>
+  <thead>
+    <tr><th>Name</th><th>Email</th><th>Phone</th></tr>
+  </thead>
+  <tbody>
+    {% for client in object_list %}
+    <tr>
+      <td><a href="/clients/{{ client.id }}/">{{ client.full_name }}</a></td>
+      <td>{{ client.email }}</td>
+      <td>{{ client.phone }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">No clients yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
